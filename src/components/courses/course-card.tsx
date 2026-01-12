@@ -15,6 +15,8 @@ const getLevelStyles = (level: CourseLevel) => {
 };
 
 export function CourseCard({ course }: { course: Course }) {
+  console.log(course)
+  
   return (
     <Link
       href={`/courses/${course.id}`}

@@ -11,13 +11,17 @@ interface GetLessonParams {
 
 export async function getLesson({ courseSlug, chapterSlug, lessonSlug }: GetLessonParams) {
   const payload = await getPayload({ config })
-  
+
+  // === REQUÊTE 1: Récupérer la structure du cours avec métadonnées leçons uniquement ===
+  // Grâce à defaultPopulate sur Lessons, les leçons ne contiennent que:
+  // id, title, slug, difficulty (pas de description, solution, exercise)
   const courseQuery = await payload.find({
     collection: 'courses',
     where: {
       slug: { equals: courseSlug },
     },
-    depth: 2,
+    depth: 1, // Populate lessons via defaultPopulate
+    // Note: Pas de select ici car les champs sont dans des tabs
   })
 
   const course = courseQuery.docs[0]
@@ -29,28 +33,44 @@ export async function getLesson({ courseSlug, chapterSlug, lessonSlug }: GetLess
   if (!chapter) return null
 
   const lessonsInChapter = chapter.lessons || []
-  const lesson = lessonsInChapter.find(
+  const lessonMetadata = lessonsInChapter.find(
     (l: any) => typeof l === 'object' && l.slug === lessonSlug
   ) as any
 
-  if (!lesson) return null
+  if (!lessonMetadata) return null
 
-  const allLessonsInCourse = modules.flatMap((m) => 
+  // === REQUÊTE 2: Récupérer le contenu complet de SEULEMENT la leçon active ===
+  const fullLesson = await payload.findByID({
+    collection: 'lessons',
+    id: lessonMetadata.id,
+    depth: 0, // Pas de profondeur automatique
+    select: {
+      id: true,
+      title: true,
+      slug: true,
+      difficulty: true,
+      description: true, // Contenu complet
+      exercise: true,    // Relation vers quiz/challenge
+    },
+  })
+
+  // Navigation: utilise les métadonnées du cours (pas besoin de contenu complet)
+  const allLessonsInCourse = modules.flatMap((m) =>
     (m.lessons || []).map((l: any) => ({
       ...l,
-      moduleSlug: m.slug 
+      moduleSlug: m.slug
     }))
   )
 
-  const currentIndex = allLessonsInCourse.findIndex((l) => l.id === lesson.id)
-  
+  const currentIndex = allLessonsInCourse.findIndex((l) => l.id === fullLesson.id)
+
   const prevLesson = currentIndex > 0 ? allLessonsInCourse[currentIndex - 1] : null
-  const nextLesson = currentIndex < allLessonsInCourse.length - 1 
-    ? allLessonsInCourse[currentIndex + 1] 
+  const nextLesson = currentIndex < allLessonsInCourse.length - 1
+    ? allLessonsInCourse[currentIndex + 1]
     : null
 
   return {
-    lesson,
+    lesson: fullLesson, // Leçon complète avec description et exercise
     chapter: {
       title: chapter.moduleTitle,
       slug: chapter.slug
@@ -58,7 +78,8 @@ export async function getLesson({ courseSlug, chapterSlug, lessonSlug }: GetLess
     course: {
       id: course.id,
       title: course.title,
-      slug: course.slug
+      slug: course.slug,
+      level: course.level,
     },
     navigation: {
       prev: prevLesson ? `/courses/${courseSlug}/${prevLesson.moduleSlug}/${prevLesson.slug}` : null,

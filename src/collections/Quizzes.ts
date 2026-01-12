@@ -4,6 +4,17 @@ import { difficultyField } from '@/fields/Difficulty'
 export const Quizzes: CollectionConfig = {
   slug: 'quizzes',
   admin: { useAsTitle: 'title' },
+
+  // Define default fields to populate when this collection is referenced
+  defaultPopulate: {
+    id: true,
+    title: true,
+    slug: true,
+    difficulty: true,
+    // Exclude: questions (richText array - expensive)
+    // Exclude: answers (array with richText questions - expensive)
+  },
+
   fields: [
     {
       name: 'title',

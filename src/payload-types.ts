@@ -236,21 +236,6 @@ export interface Lesson {
     };
     [k: string]: unknown;
   };
-  solution: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
   exercise?:
     | ({
         relationTo: 'quizzes';
@@ -329,6 +314,21 @@ export interface ChallengesExercice {
     | number
     | boolean
     | null;
+  solution: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -819,7 +819,6 @@ export interface LessonsSelect<T extends boolean = true> {
   slug?: T;
   difficulty?: T;
   description?: T;
-  solution?: T;
   exercise?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -874,6 +873,7 @@ export interface ChallengesExercicesSelect<T extends boolean = true> {
   difficulty?: T;
   fileStructure?: T;
   tests?: T;
+  solution?: T;
   updatedAt?: T;
   createdAt?: T;
 }

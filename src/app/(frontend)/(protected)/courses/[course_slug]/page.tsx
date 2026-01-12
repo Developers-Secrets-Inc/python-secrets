@@ -1,15 +1,15 @@
 import { AppHeader } from '@/components/headers/app-header'
 import { TerminalDecoration } from '@/components/courses/terminal-decoration'
 import { TrackFooter } from '@/components/courses/track-footer'
-import { Play, Lock, CheckCircle2, Cpu, Layers, FileX, ArrowLeft } from 'lucide-react'
+import { Play, Lock, CheckCircle2, Layers, FileX, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
 // Imports Payload
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
-export default async function CourseDetailPage({ params }: { params: Promise<{ course_id: string }> }) {
-  const { course_id: courseId } = await params
+export default async function CourseDetailPage({ params }: { params: Promise<{ course_slug: string }> }) {
+  const { course_slug: courseId } = await params
   
   // 1. Initialisation Payload
   const payload = await getPayload({ config })
@@ -18,7 +18,7 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
   const course = await payload.findByID({
     id: courseId,
     collection: 'courses',
-    depth: 2, // Important pour résoudre les relations modules -> lessons
+    depth: 1, // Optimisé: defaultPopulate sur Lessons réduit la taille des leçons
   })
 
   // 3. Gestion de l'état "Cours non trouvé"
@@ -28,6 +28,13 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
 
   // Formatage de la date de révision
   const lastRevision = new Date(course.updatedAt).toLocaleDateString('en-CA')
+
+  // URL vers la première leçon (pour le bouton "Continuer")
+  const firstModule = course.modules?.[0]
+  const firstLesson = firstModule?.lessons?.[0]
+  const continueUrl = firstModule && firstLesson
+    ? `/courses/${course.slug}/${firstModule.slug}/${firstLesson.slug}/description`
+    : '#'
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -55,7 +62,6 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
                   <span className="text-[10px] px-2 py-0.5 border border-zinc-900 dark:border-white font-bold bg-zinc-900 dark:bg-white text-white dark:text-black">
                     {course.code}
                   </span>
-                  <span className="text-[10px] text-zinc-400 font-mono italic">BUILD_{course.version}</span>
                 </div>
                 <h1 className="text-4xl sm:text-5xl font-black italic leading-none tracking-[-0.02em]">
                   {course.title}
@@ -66,29 +72,19 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
               </div>
 
               <div className="flex flex-wrap gap-8 pt-4">
-                <StatItem label="INSTRUCTOR" value={course.author || 'SYSTEM_CORE'} />
                 <StatItem label="TOTAL_RUNTIME" value={course.duration || '--H --M'} />
                 <StatItem label="LAST_REVISION" value={lastRevision} />
               </div>
             </div>
 
-            {/* Tech Stack Sidebar */}
+            {/* Actions Sidebar */}
             <div className="w-full lg:w-64 space-y-6 border-t lg:border-t-0 lg:border-l border-zinc-200 dark:border-zinc-800 pt-6 lg:pt-0 lg:pl-10">
-              <div className="space-y-4">
-                <h3 className="text-[11px] font-bold text-zinc-400 flex items-center gap-2">
-                  <Cpu size={12} /> SYSTEM_REQUIREMENTS
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {course.techStack?.map((item: any, i: number) => (
-                    <span key={i} className="text-[10px] font-mono border border-zinc-200 dark:border-zinc-800 px-2 py-1 bg-white dark:bg-zinc-900">
-                      {item.tech}
-                    </span>
-                  )) || <span className="text-[10px] text-zinc-500 italic">None specified</span>}
-                </div>
-              </div>
-              <button className="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-4 text-xs font-black tracking-[0.2em] transition-colors flex items-center justify-center gap-3">
-                <Play size={14} fill="currentColor" /> INITIALIZE_LOAD
-              </button>
+              <Link
+                href={continueUrl}
+                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-4 text-xs font-black tracking-[0.2em] transition-colors flex items-center justify-center gap-3"
+              >
+                <Play size={14} fill="currentColor" /> CONTINUE_TRAINING
+              </Link>
             </div>
           </div>
         </div>
@@ -110,14 +106,15 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
                 
                 <div className="divide-y divide-zinc-100 dark:divide-zinc-900">
                   {module.lessons?.map((lesson: any, lIdx: number) => (
-                    <div 
-                      key={lesson.id} 
-                      className={`group flex items-center gap-6 px-4 sm:px-8 py-5 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-900/40 cursor-pointer`}
+                    <Link
+                      key={lesson.id}
+                      href={`/courses/${course.slug}/${module.slug}/${lesson.slug}/description`}
+                      className="group flex items-center gap-6 px-4 sm:px-8 py-5 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-900/40"
                     >
                       <span className="text-[10px] font-mono text-zinc-400 w-6">
                         {(lIdx + 1).toString().padStart(2, '0')}
                       </span>
-                      
+
                       <div className="flex-1">
                         <h4 className="text-sm font-bold group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                           {lesson.title}
@@ -125,16 +122,12 @@ export default async function CourseDetailPage({ params }: { params: Promise<{ c
                       </div>
 
                       <div className="flex items-center gap-8">
-                        <span className="text-[10px] font-mono text-zinc-400 hidden sm:block">
-                          {lesson.duration || '--:--'}
-                        </span>
-                        
                         <div className="w-10 flex justify-center">
                           {/* Logique de status à lier plus tard à l'user progress */}
                           <Play size={16} className="text-zinc-900 dark:text-white group-hover:scale-125 transition-transform" />
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>

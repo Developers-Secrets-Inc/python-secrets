@@ -1,7 +1,7 @@
 // components/courses/lessons/nav/lesson-sidebar-header.tsx
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { FileText, Lightbulb, History, Lock, Unlock, AlertTriangle, Loader2 } from 'lucide-react'
@@ -18,6 +18,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
+interface Exercise {
+  relationTo: string
+  value: string | number
+}
+
 interface LessonSidebarHeaderProps {
   userId: string
   lessonId: number
@@ -25,6 +30,7 @@ interface LessonSidebarHeaderProps {
   courseSlug: string
   chapterSlug: string
   partSlug: string
+  exercise: Exercise | null
 }
 
 export function LessonSidebarHeader({
@@ -33,7 +39,8 @@ export function LessonSidebarHeader({
   courseId,
   courseSlug,
   chapterSlug,
-  partSlug
+  partSlug,
+  exercise,
 }: LessonSidebarHeaderProps) {
   const pathname = usePathname()
   const router = useRouter()
@@ -41,7 +48,10 @@ export function LessonSidebarHeader({
 
   const { isUnlocked, isLoading, unlockSolution, isUpdating } = useLessonProgress(userId, lessonId, courseId)
 
-  // Détermine l'onglet actif basé sur le pathname
+  const showSolutionTab = useMemo(() => {
+    return exercise?.relationTo === 'challenges-exercices'
+  }, [exercise])
+
   const activeTab = useMemo(() => {
     const segments = pathname.split('/').filter(Boolean)
     const lastSegment = segments[segments.length - 1]
@@ -52,6 +62,12 @@ export function LessonSidebarHeader({
   }, [pathname])
 
   const basePath = `/courses/${courseSlug}/${chapterSlug}/${partSlug}`
+
+  useEffect(() => {
+    if (!showSolutionTab && activeTab === 'solution') {
+      router.push(`${basePath}/description`)
+    }
+  }, [showSolutionTab, activeTab, basePath, router])
 
   const getTabClass = (tabName: string) => cn(
     "flex-1 gap-2 rounded-none border-0 border-b h-12 transition-all",
@@ -89,23 +105,25 @@ export function LessonSidebarHeader({
             </Link>
           </Button>
 
-          <Button
-            variant="ghost"
-            className={cn(getTabClass('solution'))}
-            asChild
-            disabled={isLoading}
-          >
-            <Link href={`${basePath}/solution`} onClick={handleSolutionClick}>
-              {isLoading ? (
-                <Lock className="h-4 w-4 text-muted-foreground" />
-              ) : isUnlocked ? (
-                <Lightbulb className="h-4 w-4" />
-              ) : (
-                <Lock className="h-4 w-4 text-muted-foreground" />
-              )}
-              <span className="hidden sm:inline">Solution</span>
-            </Link>
-          </Button>
+          {showSolutionTab && (
+            <Button
+              variant="ghost"
+              className={cn(getTabClass('solution'))}
+              asChild
+              disabled={isLoading}
+            >
+              <Link href={`${basePath}/solution`} onClick={handleSolutionClick}>
+                {isLoading ? (
+                  <Lock className="h-4 w-4 text-muted-foreground" />
+                ) : isUnlocked ? (
+                  <Lightbulb className="h-4 w-4" />
+                ) : (
+                  <Lock className="h-4 w-4 text-muted-foreground" />
+                )}
+                <span className="hidden sm:inline">Solution</span>
+              </Link>
+            </Button>
+          )}
 
           <Button variant="ghost" className={cn(getTabClass('submissions'))} asChild>
             <Link href={`${basePath}/submissions`}>

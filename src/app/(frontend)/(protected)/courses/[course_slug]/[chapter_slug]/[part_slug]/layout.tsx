@@ -29,18 +29,18 @@ export default async function LessonLayout({
   params,
 }: {
   children: React.ReactNode
-  params: Promise<{ course_id: string; chapter_id: string; part_id: string }>
+  params: Promise<{ course_slug: string; chapter_slug: string; part_slug: string }>
 }) {
-  const { course_id, chapter_id, part_id } = await params
+  const { course_slug, chapter_slug, part_slug } = await params
   const session = await auth.api.getSession({
     headers: await headers(),
   })
 
   // Récupération des données réelles
   const data = await getLesson({
-    courseSlug: course_id,
-    chapterSlug: chapter_id,
-    lessonSlug: part_id,
+    courseSlug: course_slug,
+    chapterSlug: chapter_slug,
+    lessonSlug: part_slug,
   })
 
   if (!data) return notFound()
@@ -55,9 +55,10 @@ export default async function LessonLayout({
         userId={session?.user.id}
         lessonId={lesson.id}
         courseId={course.id}
-        courseSlug={course_id}
-        chapterSlug={chapter_id}
-        partSlug={part_id}
+        courseSlug={course_slug}
+        chapterSlug={chapter_slug}
+        partSlug={part_slug}
+        exercise={lesson.exercise}
       />
 
       <div className="flex-1 overflow-y-auto p-4 md:p-6">

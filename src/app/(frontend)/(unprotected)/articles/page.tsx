@@ -1,4 +1,3 @@
-import { AppHeader } from '@/components/headers/app-header'
 import { TrackHeader } from '@/components/courses/track-header'
 import { TerminalDecoration } from '@/components/courses/terminal-decoration'
 import { TrackFooter } from '@/components/courses/track-footer'
