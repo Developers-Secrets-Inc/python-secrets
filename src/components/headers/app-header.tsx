@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils'
 
 export const navItems = [
   { label: 'Courses', href: '/courses' },
-  { label: 'Tutorials', href: '/tutorials' },
+  // { label: 'Tutorials', href: '/tutorials' },
   { label: 'Articles', href: '/articles' },
   { label: 'Blog', href: '/blog' },
 ]
