@@ -1,71 +1,198 @@
-# Payload Blank Template
+# Python Secrets
 
-This template comes configured with the bare minimum to get started on anything you need.
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Next.js](https://img.shields.io/badge/Next.js-15.4-black)
+![Payload](https://img.shields.io/badge/Payload-3.69-red)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue)
+![Status](https://img.shields.io/badge/status-active--development-yellow)
 
-## Quick start
+An interactive Python learning platform that enables users to master Python through structured courses, real-time code execution, and comprehensive progress tracking.
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+## Overview
 
-## Quick Start - local setup
+Python Secrets is a web-based educational platform designed to teach Python programming through interactive lessons, coding challenges, and quizzes. Users can write and execute Python code directly in their browser using two compilation engines (Pyodide for client-side execution and E2B for server-side execution), providing immediate feedback and a hands-on learning experience.
 
-To spin up this template locally, follow these steps:
+Built for learners at all levels, from beginners discovering Python basics to advanced users exploring complex topics like distributed systems.
 
-### Clone
+## Features
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+### 🎓 Learning Management System
+- **Structured Curriculum**: Multi-level courses organized into chapters and lessons (Beginner, Intermediate, Advanced)
+- **Progress Tracking**: Real-time monitoring of lesson completion and overall course progress
+- **Solution Unlocking**: Users can unlock official solutions after completing lessons
+- **Persistent State**: Code snapshots and quiz answers are saved automatically
 
-### Development
+### 💻 Interactive Code Execution
+- **Dual Compiler System**:
+  - **Pyodide**: Client-side Python execution (runs directly in browser, fast for simple code)
+  - **E2B**: Server-side Python execution (isolated environment, supports full Python ecosystem)
+- **Multi-file Support**: Execute projects with multiple files and dependencies
+- **Real-time Output**: stdout, stderr, and error handling displayed immediately
+- **Monaco Editor**: Professional code editing experience with syntax highlighting
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URL` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+### 📚 Content Types
+- **Lessons**: Text-based tutorials with code examples and descriptions
+- **Quizzes**: Multiple-choice questions to test understanding
+- **Challenges**: Coding exercises with automated test cases and validation
+- **Articles & Tutorials**: Supplementary learning materials and blog content
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+### 👥 User Engagement
+- **Rating System**: 1-5 star ratings for lessons
+- **Like/Dislike**: Quick feedback mechanism on content
+- **Completion Tracking**: Visual progress indicators for courses and lessons
+- **Optimistic UI**: Immediate feedback with background synchronization
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+### ⚙️ Content Management
+- **Payload CMS Admin**: Full CRUD operations for all content
+- **Rich Text Editor**: Create and edit lessons, quizzes, and articles
+- **Media Management**: Upload and manage images, files, and resources
+- **User Management**: Track user progress and engagement
 
-#### Docker (Optional)
+## Tech Stack
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+### Frontend
+- **Next.js 15.4** - React framework with App Router and Server Components
+- **React 19.2** - UI library
+- **TypeScript 5.7** - Type safety and better developer experience
+- **Tailwind CSS v4** - Utility-first styling
+- **Radix UI** - Accessible component primitives
+- **Monaco Editor** - Professional code editor
+- **Recharts** - Data visualization
 
-To do so, follow these steps:
+### Backend & Database
+- **Payload CMS 3.69** - Headless CMS for content management
+- **PostgreSQL** - Primary database (via Supabase)
+- **Better Auth 1.4** - Authentication system
 
-- Modify the `MONGODB_URL` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URL` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+### Python Execution
+- **E2B Code Interpreter 2.3** - Server-side Python execution
+- **Pyodide** - Client-side Python execution using WebAssembly
 
-## How it works
+### State Management
+- **TanStack Query 5.90** - Server state management
+- **Zustand 5.0** - Client state management
 
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
+## Project Status
 
-### Collections
+**Current Version**: 1.0.0
 
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
+**Status**: Active Development
 
-- #### Users (Authentication)
+The platform is currently in active development with core features implemented including course management, progress tracking, and the dual Python execution system.
 
-  Users are auth-enabled collections that have access to the admin panel.
+### Recent Updates
+- ✅ Payload CMS 3.69 integration
+- ✅ Dual Python compiler system (E2B + Pyodide)
+- ✅ Course and chapter structure
+- ✅ Progress tracking and engagement system
+- ✅ Optimistic UI updates
+- 🔄 Playground (development-only, to be removed in production)
 
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
+## For Contributors
 
-- #### Media
+### Prerequisites
 
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
+- **Node.js**: `^18.20.2 || >=20.9.0`
+- **pnpm**: `^9 || ^10` (required - do not use npm or yarn)
+- **Git**
 
-### Docker
+### Quick Start
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd python-secrets-2
+   ```
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+2. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+3. **Generate Payload types**
+   ```bash
+   pnpm payload generate:types
+   ```
 
-## Questions
+4. **Configure environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration (see below)
+   ```
 
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
-# python-secrets
-# python-secrets
-# python-secrets
-# python-secrets
+5. **Start development server**
+   ```bash
+   pnpm dev
+   ```
+
+6. **Access the application**
+   - Frontend: [http://localhost:3000](http://localhost:3000)
+   - Payload Admin: [http://localhost:3000/admin](http://localhost:3000/admin)
+
+### Environment Variables
+
+For detailed setup instructions including external accounts (Supabase, E2B), see the [complete setup guide](./docs/SETUP.md).
+
+**Required variables**:
+- `DATABASE_URL` - PostgreSQL connection string (Supabase)
+- `PAYLOAD_SECRET` - Payload CMS secret key
+- `E2B_API_KEY` - E2B API key for Python execution
+- `NEXT_PUBLIC_APP_URL` - Application base URL
+
+## Documentation
+
+For detailed information about the project, refer to the documentation in the `docs/` folder:
+
+- **[README](./docs/README.md)** - Project overview and features
+- **[SETUP](./docs/SETUP.md)** - Complete development setup guide
+- **[ARCHITECTURE](./docs/ARCHITECTURE.md)** - Architecture patterns and data flow
+- **[TECH_STACK](./docs/TECH_STACK.md)** - Complete technology stack
+- **[PROJECT_STRUCTURE](./docs/PROJECT_STRUCTURE.md)** - Directory organization
+- **[COLLECTIONS](./docs/COLLECTIONS.md)** - Database schema
+- **[API](./docs/API.md)** - API routes and endpoints
+- **[COMPILERS](./docs/COMPILERS.md)** - Python execution system
+- **[AUTH](./docs/AUTH.md)** - Authentication system
+- **[STATE_MANAGEMENT](./docs/STATE_MANAGEMENT.md)** - State management patterns
+- **[CONVENTIONS](./docs/CONVENTIONS.md)** - Code style and conventions
+
+## Development Scripts
+
+```bash
+# Development
+pnpm dev              # Start dev server
+pnpm devsafe          # Start fresh (clears .next cache)
+pnpm build            # Build for production
+pnpm start            # Start production server
+
+# Payload
+pnpm payload generate:types     # Generate TypeScript types
+pnpm payload generate:importmap # Generate import map
+
+# Testing & Linting
+pnpm test             # Run all tests
+pnpm test:int         # Integration tests (Vitest)
+pnpm test:e2e         # End-to-end tests (Playwright)
+pnpm lint             # Lint code
+```
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Credits
+
+Built with:
+- [Payload CMS](https://payloadcms.com) - Headless CMS
+- [Next.js](https://nextjs.org) - React framework
+- [E2B](https://e2b.dev) - Code execution
+- [Pyodide](https://pyodide.org) - Python in browser
+
+## Support
+
+For detailed documentation, see the [docs folder](./docs/).
+
+For specific issues or questions about dependencies:
+- **Payload CMS**: [payloadcms.com/docs](https://payloadcms.com/docs)
+- **Next.js**: [nextjs.org/docs](https://nextjs.org/docs)
+- **E2B**: [e2b.dev/docs](https://e2b.dev/docs)
