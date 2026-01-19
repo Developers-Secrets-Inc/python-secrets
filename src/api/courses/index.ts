@@ -122,7 +122,7 @@ export async function updateProgress({
   const payload = await getPayload({ config })
 
     console.log(userId)
-  
+
   const existing = await payload.find({
     collection: 'user-progress',
     where: {
@@ -146,5 +146,86 @@ export async function updateProgress({
         ...updates
       }
     })
+  }
+}
+
+interface GetCourseProgressParams {
+  userId: string
+  courseId: number
+}
+
+export async function getCourseProgress({ userId, courseId }: GetCourseProgressParams) {
+  const payload = await getPayload({ config })
+
+  // Fetch course with modules and lessons (using defaultPopulate)
+  const courseQuery = await payload.find({
+    collection: 'courses',
+    where: {
+      id: { equals: courseId },
+    },
+    depth: 1, // Populate lessons via defaultPopulate
+  })
+
+  const course = courseQuery.docs[0]
+  if (!course) return null
+
+  // Fetch all user progress for this course
+  const progressQuery = await payload.find({
+    collection: 'user-progress',
+    where: {
+      and: [
+        { userId: { equals: userId } },
+        { course: { equals: courseId } }
+      ]
+    },
+  })
+
+  // Create a map of lessonId -> progress status for quick lookup
+  const progressMap = new Map()
+  progressQuery.docs.forEach((progress: any) => {
+    const lessonId = typeof progress.lesson === 'object' ? progress.lesson.id : progress.lesson
+    progressMap.set(lessonId, progress.status)
+  })
+
+  // Build the structured progress data
+  const modules = course.modules || []
+  let totalLessons = 0
+  let completedLessons = 0
+
+  const chaptersWithProgress = modules.map((module: any) => {
+    const lessons = (module.lessons || []).map((lesson: any) => {
+      totalLessons++
+      const status = progressMap.get(lesson.id) || 'not_started'
+      if (status === 'completed') completedLessons++
+
+      return {
+        id: lesson.id,
+        title: lesson.title,
+        slug: lesson.slug,
+        difficulty: lesson.difficulty,
+        status,
+      }
+    })
+
+    return {
+      moduleSlug: module.slug,
+      moduleTitle: module.moduleTitle,
+      lessons,
+    }
+  })
+
+  return {
+    course: {
+      id: course.id,
+      title: course.title,
+      slug: course.slug,
+      level: course.level,
+    },
+    progress: {
+      completedCount: completedLessons,
+      totalCount: totalLessons,
+      percentage: totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0,
+      chapters: chaptersWithProgress,
+    },
   }
 }
