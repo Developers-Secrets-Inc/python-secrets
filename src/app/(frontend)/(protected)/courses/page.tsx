@@ -10,19 +10,14 @@ import { Database, FolderX } from 'lucide-react'
 import { TrackHeader } from '@/components/courses/track-header'
 
 export default async function Page() {
-  // 1. Initialisation de Payload
   const payload = await getPayload({ config })
 
-  // 2. Récupération des formations (optimisé: depth: 0 évite de peupler les relations)
-  // Note: On n'utilise pas select ici car les champs sont dans des tabs et Payload
-  // ne supporte pas bien select sur les champs dans des tabs
   const { docs: courses } = await payload.find({
     collection: 'courses',
     sort: 'title', // Tri alphabétique par défaut
     depth: 0, // Pas de profondeur = pas de population des relations (modules.lessons reste des IDs)
   })
 
-  // 3. Calculs des stats (Simulation du complété à 0 en attendant l'auth)
   const completedCount = 0 
   const progressPercent = courses.length > 0 ? Math.round((completedCount / courses.length) * 100) : 0
 
