@@ -21,6 +21,7 @@
 - [x. Onboarding Experience](./14-onboarding-experience.md)
 - [x. Quiz System](./15-quiz-system.md)
 - [x. Search and Discovery](./16-search-and-discovery.md)
+- [x. Course Page Strategy](./19-course-page-strategy.md)
 - [ ] Learning Path
 
 ### Technical Architecture

@@ -1,6 +1,20 @@
 # Pricing and Preview Strategy
 
-## Content Preview Strategy
+## Launch Strategy: Full Free for Validation
+
+### Phase 1: Validation (Current)
+- **All content is free** to validate what resonates with users
+- Test course formats, lesson structures, and engagement patterns
+- Gather feedback before committing to pricing model
+- Build user base through word-of-mouth and social sharing
+- Focus on learning outcomes and content quality
+
+### Phase 2: Introduction of Pricing (After Validation)
+- Start with low ticket price for early adopters
+- Increase price progressively as value is proven
+- Clear free/paid separation based on validated data
+
+## Content Preview Strategy (Phase 2+)
 
 ### Free Tier as Primary Preview
 The **complete free courses** serve as the main preview mechanism:
