@@ -22,6 +22,10 @@
 - [x. Quiz System](./15-quiz-system.md)
 - [x. Search and Discovery](./16-search-and-discovery.md)
 - [x. Course Page Strategy](./19-course-page-strategy.md)
+- [x. Course Structure: Introduction to Python](./20-intro-python-course-structure.md)
+- [x. Course Catalog Overview](./21-course-catalog-overview.md)
+- [x. Pricing Tiers Strategy](./22-pricing-tiers-strategy.md)
+- [x. Launch and Acquisition Strategy](./23-launch-acquisition-strategy.md)
 - [ ] Learning Path
 
 ### Technical Architecture
