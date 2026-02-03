@@ -31,7 +31,7 @@ export const AuthNav = () => {
         {session ? (
           <>
             <Button variant="outline" size="sm" asChild>
-              <Link href="/courses" className="flex items-center gap-2">
+              <Link href="/home" className="flex items-center gap-2">
                 Dashboard
               </Link>
             </Button>
