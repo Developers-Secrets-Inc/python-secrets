@@ -3,7 +3,11 @@
     "allow": [
       "Bash(/c/Users/dpereira/tools/gh/bin/gh label create:*)",
       "Bash(/c/Users/dpereira/tools/gh/bin/gh issue create:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(tree:*)",
+      "Skill(web-design-guidelines)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
